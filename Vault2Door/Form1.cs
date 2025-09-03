@@ -48,10 +48,13 @@ namespace Vault2Door
             // Main Panel
             Panel main = new Panel
             {
-                Dock = DockStyle.Fill,
+                Location = new Point(200, 0), // Right next to 200px sidebar
+                Size = new Size(this.ClientSize.Width - 200, this.ClientSize.Height),
                 BackColor = Color.White,
-                Padding = new Padding(20)
+                Padding = new Padding(20),
+                AutoScroll = true
             };
+
             this.Controls.Add(main);
 
             Label header = new Label
