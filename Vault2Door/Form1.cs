@@ -11,23 +11,37 @@ namespace Vault2Door
         private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
         private bool isDarkMode = false;
 
-        // UI references (so we can theme them)
-        private Panel sidebar, mainPanel, topHeader, banner;
-        private Label bannerText, marketStatus, balanceLabel;
-        private PictureBox chartBox;
-        private Button btnTheme, btnBell, btnUser;
+        // UI references (initialized in BuildDashboardUI)
+        private Panel sidebar = null!;
+        private Panel mainPanel = null!;
+        private Panel topHeader = null!;
+        private Panel banner = null!;
+        private Label bannerText = null!;
+        private Label marketStatus = null!;
+        private Label balanceLabel = null!;
+        private PictureBox chartBox = null!;
+        private Button btnTheme = null!;
+        private Button btnBell = null!;
+        private Button btnUser = null!;
 
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent(); // Designer wires Form1_Load here
             this.Text = "PreciousMetals";
-            this.Size = new Size(1440, 850);               // Slightly larger window
+            this.Size = new Size(1440, 850);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
 
             BuildDashboardUI();
-            ApplyTheme(); // start in light mode
+            ApplyTheme(); // start light mode
+        }
+
+        // === Fix for CS0103: designer expects this ===
+        private void Form1_Load(object? sender, EventArgs e)
+        {
+            // no-op; everything is built in constructor
+            // If you prefer, you can move ApplyTheme() here instead.
         }
 
         private void BuildDashboardUI()
@@ -291,8 +305,7 @@ namespace Vault2Door
             string fullPath = Path.Combine(gifPathRoot, gifFileName);
             if (File.Exists(fullPath))
             {
-                // Reset then set ImageLocation so GIF replays cleanly
-                chartBox.Image = null;
+                chartBox.Image = null;               // reset so GIF restarts
                 chartBox.ImageLocation = fullPath;
             }
             else
@@ -312,31 +325,27 @@ namespace Vault2Door
 
             this.BackColor = formBg;
 
-            // Key containers
             if (sidebar != null) sidebar.BackColor = sidebarBg;
             if (mainPanel != null) mainPanel.BackColor = basePanelBg;
             if (topHeader != null) topHeader.BackColor = basePanelBg;
 
-            // Banner: keep strong contrast
+            // Banner keeps high contrast
             if (banner != null)
             {
                 banner.BackColor = isDarkMode ? Color.FromArgb(40, 44, 52) : Color.FromArgb(29, 39, 55);
                 if (bannerText != null) bannerText.ForeColor = Color.White;
             }
 
-            // Header labels
             if (marketStatus != null) marketStatus.ForeColor = isDarkMode ? Color.LightGreen : Color.Green;
             if (balanceLabel != null) balanceLabel.ForeColor = textColor;
 
-            // Re-style all labels/buttons/panels under mainPanel (except banner)
+            // Re-style controls under mainPanel (excluding banner)
             void Recurse(Control c)
             {
                 if (c == banner) return;
 
                 if (c is Panel p) p.BackColor = basePanelBg;
-
                 if (c is Label lb) lb.ForeColor = textColor;
-
                 if (c is Button b)
                 {
                     b.ForeColor = textColor;
@@ -344,16 +353,12 @@ namespace Vault2Door
                     b.BackColor = isDarkMode ? Color.FromArgb(43, 47, 54) : Color.White;
                 }
 
-                foreach (Control child in c.Controls)
-                    Recurse(child);
+                foreach (Control child in c.Controls) Recurse(child);
             }
             if (mainPanel != null) Recurse(mainPanel);
 
-            // Graph area background for contrast
-            if (chartBox != null)
-                chartBox.BackColor = isDarkMode ? Color.Black : Color.LightGray;
+            if (chartBox != null) chartBox.BackColor = isDarkMode ? Color.Black : Color.LightGray;
 
-            // Toggle icon
             if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
         }
     }
