@@ -7,14 +7,19 @@ namespace Vault2Door
 {
     public partial class Form1 : Form
     {
-        private Panel graphPanel;
+        private PictureBox chartBox;
+        private string gifPathRoot;
 
         public Form1()
         {
             InitializeComponent();
             this.Text = "PreciousMetals";
-            this.WindowState = FormWindowState.Maximized;
-            this.FormBorderStyle = FormBorderStyle.None;
+            this.Size = new Size(1440, 850); // Larger fixed size
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+
+            // Correct path to your local gif folder
+            gifPathRoot = "C:\\Users\\Qlurut\\source\\repos\\PreciousMetalsTradingApp\\PreciousMetalsTradingApp\\gif\\";
             BuildDashboardUI();
         }
 
@@ -29,8 +34,7 @@ namespace Vault2Door
             };
             this.Controls.Add(sidebar);
 
-            string[] sidebarButtons =
-            {
+            string[] sidebarButtons = {
                 "Dashboard", "Markets", "Holdings (4)", "Orders",
                 "Payments", "Reports", "KYC Status: Verified", "Settings"
             };
@@ -61,7 +65,7 @@ namespace Vault2Door
             };
             this.Controls.Add(main);
 
-            // Top Header Bar
+            // Top Header
             Panel topHeader = new Panel
             {
                 Size = new Size(main.Width, 40),
@@ -75,7 +79,7 @@ namespace Vault2Door
                 Text = "Markets Open",
                 Location = new Point(10, 10),
                 AutoSize = true,
-                Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                Font = new Font("Segoe UI", 10),
                 ForeColor = Color.Green
             };
             topHeader.Controls.Add(marketStatus);
@@ -83,13 +87,13 @@ namespace Vault2Door
             Label balanceLabel = new Label
             {
                 Text = "Balance: $24,750.00",
+                Location = new Point(150, 10),
                 AutoSize = true,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Location = new Point(150, 10)
+                Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
             topHeader.Controls.Add(balanceLabel);
 
-            // Info Banner
+            // Banner
             Panel banner = new Panel
             {
                 BackColor = Color.FromArgb(29, 39, 55),
@@ -103,22 +107,21 @@ namespace Vault2Door
             {
                 Text = "Trade Precious Metals with Confidence\nInvest in gold, silver, diamonds, and bronze with our secure vaulted storage and instant delivery options.",
                 ForeColor = Color.White,
-                Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                Font = new Font("Segoe UI", 10),
                 AutoSize = true,
                 Location = new Point(10, 10)
             };
             banner.Controls.Add(bannerText);
 
-            // Summary Cards Row
-            int xOffset = 0;
-            string[] metrics =
-            {
+            // Summary Cards
+            string[] metrics = {
                 "Total Portfolio:$24,750.00\n+1,250.50 (+5.3%)",
                 "Cash Balance:$8,420.00\n-180.00 (-2.1%)",
                 "Holdings Value:$16,330.00\n+1,430.50 (+9.6%)",
                 "Today's P&L:+342.80 (+1.4%)"
             };
-            for (int i = 0; i < metrics.Length; i++)
+            int xOffset = 0;
+            foreach (string metric in metrics)
             {
                 Panel card = new Panel
                 {
@@ -129,7 +132,7 @@ namespace Vault2Door
                 };
                 Label l = new Label
                 {
-                    Text = metrics[i],
+                    Text = metric,
                     Location = new Point(10, 10),
                     Size = new Size(200, 60)
                 };
@@ -138,7 +141,7 @@ namespace Vault2Door
                 xOffset += 240;
             }
 
-            // Title for Assets Section
+            // Section Title
             Label assetsTitle = new Label
             {
                 Text = "Available Assets",
@@ -148,52 +151,60 @@ namespace Vault2Door
             };
             main.Controls.Add(assetsTitle);
 
-            // Layout Panels
+            // Layout Panel
             Panel contentRow = new Panel
             {
                 Location = new Point(0, 300),
-                Size = new Size(main.Width - 40, 500),
+                Size = new Size(main.Width - 40, 400),
                 BackColor = Color.White
             };
             main.Controls.Add(contentRow);
 
-            // Left Panel - Assets
+            // Left - Asset List
             Panel assetListPanel = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(300, 500),
+                Size = new Size(300, 400),
                 BackColor = Color.White
             };
             contentRow.Controls.Add(assetListPanel);
 
-            // Right Panel - Graph
-            graphPanel = new Panel
+            // Right - Graph Panel
+            Panel graphPanel = new Panel
             {
-                Name = "graphPanel",
                 Location = new Point(310, 0),
-                Size = new Size(800, 500),
+                Size = new Size(700, 400),
                 BackColor = Color.LightGray
             };
             contentRow.Controls.Add(graphPanel);
 
-            // Add Asset Cards Vertically with Click Handlers
-            int y = 0;
-            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, () => ShowGraph("diamond"));
-            CreateAssetCard(assetListPanel, "GOLD", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 130, () => ShowGraph("gold"));
-            CreateAssetCard(assetListPanel, "SILVER", "$24.85", "-$0.15", Color.LightCoral, 10, y += 130, () => ShowGraph("silver"));
-            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 130, () => ShowGraph("bronze"));
+            // ChartBox
+            chartBox = new PictureBox
+            {
+                Size = new Size(680, 380),
+                Location = new Point(10, 10),
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+            graphPanel.Controls.Add(chartBox);
 
-            // Show initial graph
-            ShowGraph("diamond");
+            // Add Asset Cards (with Clickable Graph Switching)
+            int y = 0;
+            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond.gif");
+            CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 130, "gold.gif");
+            CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 130, "silver.gif");
+            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 130, "bronze.gif");
+
+            ShowChart("diamond.gif"); // default
         }
 
-        private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, Action onClick)
+        private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, string gifFile)
         {
             Panel card = new Panel
             {
                 BorderStyle = BorderStyle.FixedSingle,
                 Size = new Size(260, 120),
-                Location = new Point(x, y)
+                Location = new Point(x, y),
+                Cursor = Cursors.Hand
             };
 
             Label l1 = new Label { Text = name, Location = new Point(10, 10), Font = new Font("Segoe UI", 10, FontStyle.Bold) };
@@ -203,8 +214,14 @@ namespace Vault2Door
             Button buy = new Button { Text = "Buy", Location = new Point(10, 85), Width = 80 };
             Button sell = new Button { Text = "Sell", Location = new Point(100, 85), Width = 80 };
 
-            l1.Click += (s, e) => onClick();
-            card.Click += (s, e) => onClick();
+            // Handle Clicks (anywhere on card or labels)
+            void clickHandler(object s, EventArgs e) => ShowChart(gifFile);
+            card.Click += clickHandler;
+            l1.Click += clickHandler;
+            l2.Click += clickHandler;
+            l3.Click += clickHandler;
+            buy.Click += clickHandler;
+            sell.Click += clickHandler;
 
             card.Controls.Add(l1);
             card.Controls.Add(l2);
@@ -215,42 +232,18 @@ namespace Vault2Door
             parent.Controls.Add(card);
         }
 
-        private void ShowGraph(string assetName)
+        private void ShowChart(string gifFileName)
         {
-            graphPanel.Controls.Clear();
-
-            Label title = new Label
+            string fullPath = Path.Combine(gifPathRoot, gifFileName);
+            if (File.Exists(fullPath))
             {
-                Text = $"{assetName.ToUpper()} Price Trend",
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                Location = new Point(10, 10),
-                AutoSize = true
-            };
-            graphPanel.Controls.Add(title);
-
-            string path = $@"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\{assetName}.gif";
-
-            if (File.Exists(path))
-            {
-                PictureBox graphBox = new PictureBox
-                {
-                    Size = new Size(750, 400),
-                    Location = new Point(10, 40),
-                    SizeMode = PictureBoxSizeMode.StretchImage,
-                    Image = Image.FromFile(path)
-                };
-                graphPanel.Controls.Add(graphBox);
+                chartBox.Image = null;
+                chartBox.ImageLocation = fullPath;
             }
             else
             {
-                Label error = new Label
-                {
-                    Text = $"Graph image not found: {assetName}.gif",
-                    ForeColor = Color.Red,
-                    Location = new Point(10, 40),
-                    AutoSize = true
-                };
-                graphPanel.Controls.Add(error);
+                chartBox.Image = null;
+                MessageBox.Show($"Chart not found: {gifFileName}", "Missing File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
