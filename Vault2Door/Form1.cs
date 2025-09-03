@@ -7,11 +7,16 @@ namespace Vault2Door
 {
     public partial class Form1 : Form
     {
-        // Paths & state
-        private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
-        private bool isDarkMode = true; // start in dark based on your screenshot
+        // ===== Versioning =====
+        private const string AppName = "Vault2Door – PreciousMetals";
+        private const string AppVersion = "2.0 (Stable)";
 
-        // UI references
+        // ===== Paths & state =====
+        // Prefer your absolute path; fallback to local ./gif/ folder beside the EXE
+        private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
+        private bool isDarkMode = true; // stable 2.0 starts in dark (as per your last screenshot)
+
+        // ===== UI references =====
         private Panel sidebar = null!;
         private Panel mainPanel = null!;
         private Panel topHeader = null!;
@@ -23,8 +28,10 @@ namespace Vault2Door
         private Button btnTheme = null!;
         private Button btnBell = null!;
         private Button btnUser = null!;
+        private Label versionBadge = null!;
+        private ToolTip tip = new ToolTip();
 
-        // These help us resize the graph properly
+        // Helps layout the graph
         private Panel contentRow = null!;
         private Panel assetListPanel = null!;
         private Panel graphPanel = null!;
@@ -32,11 +39,30 @@ namespace Vault2Door
         public Form1()
         {
             InitializeComponent();
-            this.Text = "PreciousMetals";
-            this.Size = new Size(1560, 950);                   // a bit bigger
+            this.Text = $"{AppName} v{AppVersion}";
+            this.Size = new Size(1560, 950);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+
+            // Keyboard theme toggle (Ctrl + D)
+            this.KeyPreview = true;
+            this.KeyDown += (s, e) =>
+            {
+                if (e.Control && e.KeyCode == Keys.D)
+                {
+                    ToggleTheme();
+                    e.Handled = true;
+                }
+            };
+
+            // Path fallback if absolute path doesn't exist
+            if (!Directory.Exists(gifPathRoot))
+            {
+                var localGif = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gif");
+                if (Directory.Exists(localGif))
+                    gifPathRoot = localGif + Path.DirectorySeparatorChar;
+            }
 
             BuildDashboardUI();
             ApplyTheme(); // start in chosen theme
@@ -47,7 +73,7 @@ namespace Vault2Door
 
         private void BuildDashboardUI()
         {
-            // === Sidebar ===
+            // ===== Sidebar =====
             sidebar = new Panel
             {
                 BackColor = Color.FromArgb(245, 247, 250),
@@ -77,7 +103,7 @@ namespace Vault2Door
                 yOffset += 40;
             }
 
-            // === Main panel ===
+            // ===== Main panel =====
             mainPanel = new Panel
             {
                 Location = new Point(200, 0),
@@ -89,7 +115,7 @@ namespace Vault2Door
             };
             this.Controls.Add(mainPanel);
 
-            // === Top header ===
+            // ===== Top header =====
             topHeader = new Panel
             {
                 Size = new Size(mainPanel.Width, 56),
@@ -118,11 +144,11 @@ namespace Vault2Door
             };
             topHeader.Controls.Add(balanceLabel);
 
-            // Right header controls
+            // Right header controls (theme toggle, user, bell)
             var rightBar = new FlowLayoutPanel
             {
                 Dock = DockStyle.Right,
-                Width = 180,
+                Width = 200,
                 FlowDirection = FlowDirection.RightToLeft,
                 WrapContents = false,
                 Padding = new Padding(0, 10, 12, 0),
@@ -139,7 +165,8 @@ namespace Vault2Door
                 Margin = new Padding(10, 0, 0, 0)
             };
             btnTheme.FlatAppearance.BorderSize = 1;
-            btnTheme.Click += (s, e) => { isDarkMode = !isDarkMode; ApplyTheme(); };
+            btnTheme.Click += (s, e) => ToggleTheme();
+            tip.SetToolTip(btnTheme, "Toggle dark mode (Ctrl + D)");
             rightBar.Controls.Add(btnTheme);
 
             btnUser = new Button
@@ -151,7 +178,16 @@ namespace Vault2Door
                 Margin = new Padding(8, 0, 0, 0)
             };
             btnUser.FlatAppearance.BorderSize = 1;
-            btnUser.Click += (s, e) => MessageBox.Show("User profile clicked (stub).");
+            btnUser.Click += (s, e) =>
+            {
+                MessageBox.Show(
+                    $"{AppName}\nVersion: {AppVersion}\n\n© {DateTime.Now:yyyy} Vault2Door",
+                    "About",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            };
+            tip.SetToolTip(btnUser, "About");
             rightBar.Controls.Add(btnUser);
 
             btnBell = new Button
@@ -164,9 +200,10 @@ namespace Vault2Door
             };
             btnBell.FlatAppearance.BorderSize = 1;
             btnBell.Click += (s, e) => MessageBox.Show("No new notifications (stub).");
+            tip.SetToolTip(btnBell, "Notifications");
             rightBar.Controls.Add(btnBell);
 
-            // === Banner ===
+            // ===== Banner =====
             banner = new Panel
             {
                 BackColor = Color.FromArgb(29, 39, 55),
@@ -187,7 +224,19 @@ namespace Vault2Door
             };
             banner.Controls.Add(bannerText);
 
-            // === Summary cards ===
+            // Version badge (bottom-right of main)
+            versionBadge = new Label
+            {
+                Text = $"v{AppVersion}",
+                AutoSize = true,
+                ForeColor = Color.Gray,
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+                Location = new Point(mainPanel.Width - 80, mainPanel.Height - 30)
+            };
+            mainPanel.Controls.Add(versionBadge);
+
+            // ===== Summary cards =====
             string[] metrics =
             {
                 "Total Portfolio:$24,750.00\n+1,250.50 (+5.3%)",
@@ -217,7 +266,7 @@ namespace Vault2Door
                 xOffset += 280;
             }
 
-            // === Assets title ===
+            // ===== Assets title =====
             var assetsTitle = new Label
             {
                 Text = "Available Assets",
@@ -227,7 +276,7 @@ namespace Vault2Door
             };
             mainPanel.Controls.Add(assetsTitle);
 
-            // === Content row (assets + graph) ===
+            // ===== Content row (assets + graph) =====
             contentRow = new Panel
             {
                 Location = new Point(0, 334),
@@ -248,7 +297,7 @@ namespace Vault2Door
             };
             contentRow.Controls.Add(assetListPanel);
 
-            // Right (graph) - bigger and fills space
+            // Right (graph) - fills space
             graphPanel = new Panel
             {
                 Location = new Point(assetListPanel.Right + 12, 0),
@@ -260,7 +309,7 @@ namespace Vault2Door
 
             chartBox = new PictureBox
             {
-                Dock = DockStyle.Fill,       // fills panel
+                Dock = DockStyle.Fill,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 BackColor = Color.LightGray,
                 Margin = new Padding(0)
@@ -268,7 +317,7 @@ namespace Vault2Door
             graphPanel.Padding = new Padding(10);
             graphPanel.Controls.Add(chartBox);
 
-            // Add asset cards (clickable)
+            // Asset cards (clickable to switch GIF)
             int y = 0;
             CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond.gif");
             CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 140, "gold.gif");
@@ -322,8 +371,14 @@ namespace Vault2Door
             else
             {
                 chartBox.Image = null;
-                MessageBox.Show($"Chart not found: {gifFileName}", "Missing File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Chart not found: {gifFileName}\n\nLooked in:\n{gifPathRoot}", "Missing File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void ToggleTheme()
+        {
+            isDarkMode = !isDarkMode;
+            ApplyTheme();
         }
 
         private void ApplyTheme()
@@ -356,7 +411,7 @@ namespace Vault2Door
                 }
             }
 
-            // Main area panels/labels/buttons
+            // Main area panels/labels/buttons (exclude banner)
             void Recurse(Control c)
             {
                 if (c == banner) return; // handle banner separately
@@ -387,8 +442,11 @@ namespace Vault2Door
             }
 
             if (chartBox != null) chartBox.BackColor = isDarkMode ? Color.Black : Color.LightGray;
-
             if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
+
+            // Version badge stays subtle
+            if (versionBadge != null)
+                versionBadge.ForeColor = isDarkMode ? Color.Gray : Color.DimGray;
         }
     }
 }
