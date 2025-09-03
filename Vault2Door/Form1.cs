@@ -7,34 +7,32 @@ namespace Vault2Door
 {
     public partial class Form1 : Form
     {
-        private PictureBox chartBox;
-        private string gifPathRoot;
+        // Paths & state
+        private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
         private bool isDarkMode = false;
 
-        private Panel mainPanel;
-        private Panel topHeader;
-        private Panel sidebar;
-        private Label bannerText;
-        private Panel banner;
-        private Label balanceLabel, marketStatus;
-        private CheckBox toggleSwitch;
+        // UI references (so we can theme them)
+        private Panel sidebar, mainPanel, topHeader, banner;
+        private Label bannerText, marketStatus, balanceLabel;
+        private PictureBox chartBox;
+        private Button btnTheme, btnBell, btnUser;
 
         public Form1()
         {
             InitializeComponent();
             this.Text = "PreciousMetals";
-            this.Size = new Size(1400, 800);
+            this.Size = new Size(1440, 850);               // Slightly larger window
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
 
-            gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
-
             BuildDashboardUI();
+            ApplyTheme(); // start in light mode
         }
 
         private void BuildDashboardUI()
         {
-            // Sidebar
+            // === Sidebar ===
             sidebar = new Panel
             {
                 BackColor = Color.FromArgb(245, 247, 250),
@@ -51,7 +49,7 @@ namespace Vault2Door
             int yOffset = 20;
             foreach (string text in sidebarButtons)
             {
-                Button btn = new Button
+                var btn = new Button
                 {
                     Text = text,
                     Location = new Point(10, yOffset),
@@ -63,23 +61,25 @@ namespace Vault2Door
                 yOffset += 40;
             }
 
-            // Main Panel
+            // === Main panel ===
             mainPanel = new Panel
             {
                 Location = new Point(200, 0),
                 Size = new Size(this.ClientSize.Width - 200, this.ClientSize.Height),
                 BackColor = Color.White,
                 Padding = new Padding(20),
-                AutoScroll = true
+                AutoScroll = true,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
             this.Controls.Add(mainPanel);
 
-            // Top Header
+            // === Top header ===
             topHeader = new Panel
             {
                 Size = new Size(mainPanel.Width, 50),
                 Location = new Point(0, 0),
-                BackColor = Color.White
+                BackColor = Color.White,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             mainPanel.Controls.Add(topHeader);
 
@@ -102,45 +102,59 @@ namespace Vault2Door
             };
             topHeader.Controls.Add(balanceLabel);
 
-            // Top Right Icons + Dark Mode Toggle
-            Label notificationIcon = new Label
+            // ---- Right side of top header: icons + theme toggle
+            var rightBar = new FlowLayoutPanel
             {
-                Text = "🔔",
-                Font = new Font("Segoe UI", 12),
-                Location = new Point(topHeader.Width - 120, 12),
-                AutoSize = true
+                Dock = DockStyle.Right,
+                Width = 160,
+                FlowDirection = FlowDirection.RightToLeft,
+                WrapContents = false,
+                Padding = new Padding(0, 8, 10, 0),
+                BackColor = Color.Transparent
             };
-            topHeader.Controls.Add(notificationIcon);
+            topHeader.Controls.Add(rightBar);
 
-            Label userIcon = new Label
+            btnTheme = new Button
             {
-                Text = "👤",
-                Font = new Font("Segoe UI", 12),
-                Location = new Point(topHeader.Width - 90, 12),
-                AutoSize = true
-            };
-            topHeader.Controls.Add(userIcon);
-
-            toggleSwitch = new CheckBox
-            {
-                Text = "🌙",
-                Font = new Font("Segoe UI", 12),
-                Appearance = Appearance.Button,
-                Location = new Point(topHeader.Width - 60, 8),
+                Text = "🌙", // switches to ☀️ in dark mode
                 Width = 40,
                 Height = 30,
-                TextAlign = ContentAlignment.MiddleCenter
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(8, 0, 0, 0)
             };
-            toggleSwitch.CheckedChanged += ToggleSwitch_CheckedChanged;
-            topHeader.Controls.Add(toggleSwitch);
+            btnTheme.Click += (s, e) => { isDarkMode = !isDarkMode; ApplyTheme(); };
+            rightBar.Controls.Add(btnTheme);
 
-            // Info Banner
+            btnUser = new Button
+            {
+                Text = "👤",
+                Width = 36,
+                Height = 30,
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(8, 0, 0, 0)
+            };
+            btnUser.Click += (s, e) => MessageBox.Show("User profile clicked (stub).");
+            rightBar.Controls.Add(btnUser);
+
+            btnBell = new Button
+            {
+                Text = "🔔",
+                Width = 36,
+                Height = 30,
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(8, 0, 0, 0)
+            };
+            btnBell.Click += (s, e) => MessageBox.Show("No new notifications (stub).");
+            rightBar.Controls.Add(btnBell);
+
+            // === Banner ===
             banner = new Panel
             {
                 BackColor = Color.FromArgb(29, 39, 55),
-                Size = new Size(mainPanel.Width - 40, 100),
+                Size = new Size(mainPanel.Width - 40, 110),
                 Location = new Point(0, 60),
-                Padding = new Padding(10)
+                Padding = new Padding(10),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             mainPanel.Controls.Add(banner);
 
@@ -154,13 +168,15 @@ namespace Vault2Door
             };
             banner.Controls.Add(bannerText);
 
-            // Summary Cards
-            string[] metrics = {
+            // === Summary metrics ===
+            string[] metrics =
+            {
                 "Total Portfolio:$24,750.00\n+1,250.50 (+5.3%)",
                 "Cash Balance:$8,420.00\n-180.00 (-2.1%)",
                 "Holdings Value:$16,330.00\n+1,430.50 (+9.6%)",
                 "Today's P&L:+342.80 (+1.4%)"
             };
+
             int xOffset = 0;
             foreach (string metric in metrics)
             {
@@ -169,9 +185,9 @@ namespace Vault2Door
                     BackColor = Color.White,
                     BorderStyle = BorderStyle.FixedSingle,
                     Size = new Size(220, 80),
-                    Location = new Point(xOffset, 170)
+                    Location = new Point(xOffset, 180)
                 };
-                Label l = new Label
+                var l = new Label
                 {
                     Text = metric,
                     Location = new Point(10, 10),
@@ -182,81 +198,84 @@ namespace Vault2Door
                 xOffset += 240;
             }
 
-            // Section Title
-            Label assetsTitle = new Label
+            // === Assets title ===
+            var assetsTitle = new Label
             {
                 Text = "Available Assets",
                 Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                Location = new Point(10, 270),
+                Location = new Point(10, 280),
                 AutoSize = true
             };
             mainPanel.Controls.Add(assetsTitle);
 
-            // Content Row Panel
+            // === Content row: left (assets) + right (graph) ===
             Panel contentRow = new Panel
             {
-                Location = new Point(0, 300),
-                Size = new Size(mainPanel.Width - 40, 400),
-                BackColor = Color.White
+                Location = new Point(0, 310),
+                Size = new Size(mainPanel.Width - 40, 430),
+                BackColor = Color.White,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
             mainPanel.Controls.Add(contentRow);
 
-            // Left - Assets
+            // Left: assets
             Panel assetListPanel = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(300, 400),
+                Size = new Size(300, 420),
                 BackColor = Color.White
             };
             contentRow.Controls.Add(assetListPanel);
 
-            // Right - Graph
+            // Right: graph
             Panel graphPanel = new Panel
             {
                 Location = new Point(310, 0),
-                Size = new Size(600, 400),
+                Size = new Size(780, 420),
                 BackColor = Color.LightGray
             };
             contentRow.Controls.Add(graphPanel);
 
-            // Chart Placeholder
             chartBox = new PictureBox
             {
-                Size = new Size(580, 380),
+                Size = new Size(graphPanel.Width - 20, graphPanel.Height - 20),
                 Location = new Point(10, 10),
-                SizeMode = PictureBoxSizeMode.StretchImage
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                BackColor = Color.LightGray
             };
             graphPanel.Controls.Add(chartBox);
 
-            // Add Asset Cards
+            // Add asset cards (all clickable to switch GIF)
             int y = 0;
             CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond.gif");
             CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 130, "gold.gif");
             CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 130, "silver.gif");
             CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 130, "bronze.gif");
 
-            // Default Chart
+            // Default chart
             ShowChart("diamond.gif");
         }
 
         private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, string gifFile)
         {
-            Panel card = new Panel
+            var card = new Panel
             {
                 BorderStyle = BorderStyle.FixedSingle,
                 Size = new Size(260, 120),
-                Location = new Point(x, y)
+                Location = new Point(x, y),
+                Cursor = Cursors.Hand
             };
 
-            Label l1 = new Label { Text = name, Location = new Point(10, 10), Font = new Font("Segoe UI", 10, FontStyle.Bold) };
-            Label l2 = new Label { Text = price, Location = new Point(10, 35), Font = new Font("Segoe UI", 10) };
-            Label l3 = new Label { Text = change, Location = new Point(10, 60), ForeColor = changeColor, Font = new Font("Segoe UI", 9) };
+            var l1 = new Label { Text = name, Location = new Point(10, 10), Font = new Font("Segoe UI", 10, FontStyle.Bold), AutoSize = true };
+            var l2 = new Label { Text = price, Location = new Point(10, 35), Font = new Font("Segoe UI", 10), AutoSize = true };
+            var l3 = new Label { Text = change, Location = new Point(10, 60), ForeColor = changeColor, Font = new Font("Segoe UI", 9), AutoSize = true };
 
-            Button buy = new Button { Text = "Buy", Location = new Point(10, 85), Width = 80 };
-            Button sell = new Button { Text = "Sell", Location = new Point(100, 85), Width = 80 };
+            var buy = new Button { Text = "Buy", Location = new Point(10, 85), Width = 80, FlatStyle = FlatStyle.Flat };
+            var sell = new Button { Text = "Sell", Location = new Point(100, 85), Width = 80, FlatStyle = FlatStyle.Flat };
 
-            buy.Click += (s, e) => ShowChart(gifFile);
-            sell.Click += (s, e) => ShowChart(gifFile);
+            void clickHandler(object s, EventArgs e) => ShowChart(gifFile);
+            card.Click += clickHandler; l1.Click += clickHandler; l2.Click += clickHandler; l3.Click += clickHandler;
+            buy.Click += clickHandler; sell.Click += clickHandler;
 
             card.Controls.Add(l1);
             card.Controls.Add(l2);
@@ -272,6 +291,7 @@ namespace Vault2Door
             string fullPath = Path.Combine(gifPathRoot, gifFileName);
             if (File.Exists(fullPath))
             {
+                // Reset then set ImageLocation so GIF replays cleanly
                 chartBox.Image = null;
                 chartBox.ImageLocation = fullPath;
             }
@@ -282,25 +302,59 @@ namespace Vault2Door
             }
         }
 
-        private void ToggleSwitch_CheckedChanged(object sender, EventArgs e)
-        {
-            isDarkMode = toggleSwitch.Checked;
-            ApplyTheme();
-        }
-
         private void ApplyTheme()
         {
-            Color bgColor = isDarkMode ? Color.FromArgb(30, 30, 30) : Color.White;
-            Color fgColor = isDarkMode ? Color.White : Color.Black;
+            // Palette
+            Color formBg = isDarkMode ? Color.FromArgb(18, 20, 23) : Color.FromArgb(240, 242, 245);
+            Color basePanelBg = isDarkMode ? Color.FromArgb(24, 27, 32) : Color.White;
+            Color sidebarBg = isDarkMode ? Color.FromArgb(28, 31, 37) : Color.FromArgb(245, 247, 250);
+            Color textColor = isDarkMode ? Color.Gainsboro : Color.Black;
 
-            mainPanel.BackColor = bgColor;
-            topHeader.BackColor = bgColor;
-            banner.BackColor = isDarkMode ? Color.FromArgb(50, 50, 50) : Color.FromArgb(29, 39, 55);
-            bannerText.ForeColor = fgColor;
-            balanceLabel.ForeColor = fgColor;
-            marketStatus.ForeColor = isDarkMode ? Color.LightGreen : Color.Green;
+            this.BackColor = formBg;
+
+            // Key containers
+            if (sidebar != null) sidebar.BackColor = sidebarBg;
+            if (mainPanel != null) mainPanel.BackColor = basePanelBg;
+            if (topHeader != null) topHeader.BackColor = basePanelBg;
+
+            // Banner: keep strong contrast
+            if (banner != null)
+            {
+                banner.BackColor = isDarkMode ? Color.FromArgb(40, 44, 52) : Color.FromArgb(29, 39, 55);
+                if (bannerText != null) bannerText.ForeColor = Color.White;
+            }
+
+            // Header labels
+            if (marketStatus != null) marketStatus.ForeColor = isDarkMode ? Color.LightGreen : Color.Green;
+            if (balanceLabel != null) balanceLabel.ForeColor = textColor;
+
+            // Re-style all labels/buttons/panels under mainPanel (except banner)
+            void Recurse(Control c)
+            {
+                if (c == banner) return;
+
+                if (c is Panel p) p.BackColor = basePanelBg;
+
+                if (c is Label lb) lb.ForeColor = textColor;
+
+                if (c is Button b)
+                {
+                    b.ForeColor = textColor;
+                    b.FlatStyle = FlatStyle.Flat;
+                    b.BackColor = isDarkMode ? Color.FromArgb(43, 47, 54) : Color.White;
+                }
+
+                foreach (Control child in c.Controls)
+                    Recurse(child);
+            }
+            if (mainPanel != null) Recurse(mainPanel);
+
+            // Graph area background for contrast
+            if (chartBox != null)
+                chartBox.BackColor = isDarkMode ? Color.Black : Color.LightGray;
+
+            // Toggle icon
+            if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
         }
-
-        private void Form1_Load(object sender, EventArgs e) { }
     }
 }
