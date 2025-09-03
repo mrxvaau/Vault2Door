@@ -183,16 +183,16 @@ namespace Vault2Door
                 Size = new Size(580, 380),
                 Location = new Point(10, 10),
                 SizeMode = PictureBoxSizeMode.StretchImage,
-                ImageLocation = gifPathRoot + "diamond_animated.gif"
+                ImageLocation = gifPathRoot + "diamond.gif"
             };
             graphPanel.Controls.Add(chartBox);
 
             // Add Asset Cards Vertically in assetListPanel
             int y = 0;
-            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond_animated.gif");
-            CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 130, "gold_animated.gif");
-            CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 130, "silver_animated.gif");
-            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 130, "bronze_animated.gif");
+            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond.gif");
+            CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 130, "gold.gif");
+            CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 130, "silver.gif");
+            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 130, "bronze.gif");
         }
 
         private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, string chartFile)
