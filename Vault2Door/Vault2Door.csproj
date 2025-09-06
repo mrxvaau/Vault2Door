@@ -1,11 +1,25 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Vault2Door</AssemblyName>
+    <RootNamespace>Vault2Door</RootNamespace>
   </PropertyGroup>
 
+  <!-- Nest partials under Form1.cs in Solution Explorer for easy navigation -->
+  <ItemGroup>
+    <Compile Update="Form1.Fields.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.Constructor.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.UI.Build.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.UI.Chart.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.Theme.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="gif\**\*.*" />
+  </ItemGroup>
 </Project>
