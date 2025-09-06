@@ -1,6 +1,6 @@
 using System.Drawing;using System.IO;using System.Windows.Forms;using LiveChartsCore;using LiveChartsCore.SkiaSharpView;using LiveChartsCore.SkiaSharpView.WinForms;using Vault2Door.Models;using Vault2Door.Services;
 namespace Vault2Door{ public partial class Form1:Form{
-const string AppName="Vault2Door – PreciousMetals"; const string AppVersion="2.6 (Stable)";
+const string AppName="Vault2Door – PreciousMetals"; const string AppVersion="2.6.1c ";
 string gifPathRoot=@"C:\\gif\\"; bool isDarkMode=true; bool realtimeEnabled=false; DataRange currentRange=DataRange.OneDay;
 Panel sidebar=null!, mainPanel=null!, topHeader=null!, banner=null!, contentRow=null!, assetListPanel=null!, assetContent=null!, assetScrollTrack=null!, assetScrollThumb=null!, graphPanel=null!;
 Label bannerText=null!, marketStatus=null!, balanceLabel=null!, assetsTitle=null!, providerBadge=null!, versionBadge=null!, loadingBadge=null!;
