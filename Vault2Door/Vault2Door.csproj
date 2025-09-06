@@ -5,7 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- IMPORTANT: we keep default SDK globs ON and never explicitly Include .cs files -->
+    <!-- IMPORTANT: Use default SDK globs; DO NOT explicitly Include Compile items -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,10 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Only attach designer metadata via Update -->
+    <!-- Only attach designer metadata using Update -->
     <Compile Update="Settings\SettingsForm.cs"><SubType>Form</SubType></Compile>
     <Compile Update="Settings\SettingsForm.Designer.cs"><DependentUpon>SettingsForm.cs</DependentUpon></Compile>
     <Compile Update="UI\Form1.cs"><SubType>Form</SubType></Compile>
     <Compile Update="UI\Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="data\diamond_history.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

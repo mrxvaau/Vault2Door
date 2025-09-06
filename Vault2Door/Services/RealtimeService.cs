@@ -1,10 +1,10 @@
 using System;using System.Threading;using System.Threading.Tasks;using Vault2Door.Data;using Vault2Door.Models;
 namespace Vault2Door.Services{
   public sealed class RealtimeService{
-    readonly IPriceFeed av=new AlphaVantageEquityFeed(); readonly YahooFinanceFeed yh=new YahooFinanceFeed(); readonly IPriceFeed sim=new SimulatedFeed();
+    readonly IPriceFeed av=new AlphaVantageEquityFeed(); readonly YahooFinanceFeed yh=new YahooFinanceFeed(); readonly IPriceFeed sim=new SimulatedFeed(); readonly IPriceFeed diamond=new DiamondHistoryFeed();
     static (string av,string yh) MapSymbols(AssetKind a)=> a switch{ AssetKind.Gold=>("GLD","GLD"), AssetKind.Silver=>("SLV","SLV"), AssetKind.Bronze=>("CPER","CPER"), AssetKind.Diamond=>("",""), _=>("","") };
     public async Task<SeriesResult> GetSeriesAsync(AssetKind a, DataRange range, CancellationToken ct){
-      if(a==AssetKind.Diamond) return await sim.GetSeriesAsync("DIAMOND_SIM",ct); var (asym,yhsym)=MapSymbols(a);
+      if(a==AssetKind.Diamond) return await diamond.GetSeriesAsync("DIAMOND", ct); var (asym,yhsym)=MapSymbols(a);
       string r = range==DataRange.OneDay? "1d": range==DataRange.FiveDays? "5d":"1mo";
       string iv= range==DataRange.OneDay? "5m": range==DataRange.FiveDays? "15m":"60m";
       Exception? last=null;
