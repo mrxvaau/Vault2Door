@@ -31,12 +31,12 @@ namespace Vault2Door
                 }
             };
 
-            // Path fallback (kept for compatibility; not used by charts anymore)
+            // Path fallback (compat; not used by charts anymore)
             if (!Directory.Exists(gifPathRoot))
             {
                 var localGif = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gif");
                 if (Directory.Exists(localGif))
-                    gifPathRoot = localGif + Path.DirectorySeparatorChar;
+                    gifPathRoot = localGif + System.IO.Path.DirectorySeparatorChar;
             }
 
             BuildDashboardUI();
@@ -44,6 +44,9 @@ namespace Vault2Door
 
             // default chart preset
             ShowChart("gold");
+
+            // keep scrollbar metrics fresh on resize
+            this.Resize += (s, e) => UpdateAssetScrollMetrics();
         }
 
         // Designer wires this; keep it to avoid CS0103

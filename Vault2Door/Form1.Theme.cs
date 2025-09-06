@@ -1,8 +1,5 @@
 using System.Drawing;
 using System.Windows.Forms;
-using SkiaSharp;
-using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore;
 
 namespace Vault2Door
 {
@@ -12,6 +9,7 @@ namespace Vault2Door
         {
             isDarkMode = !isDarkMode;
             ApplyTheme();
+            ApplyChartAxesTheme(); // ensure chart paints flip
         }
 
         private void ApplyTheme()
@@ -23,6 +21,8 @@ namespace Vault2Door
             Color textColor = isDarkMode ? Color.Gainsboro : Color.Black;
             Color btnBg = isDarkMode ? Color.FromArgb(43, 47, 54) : Color.White;
             Color borderColor = isDarkMode ? Color.FromArgb(90, 95, 105) : Color.FromArgb(200, 200, 200);
+            Color trackBg = isDarkMode ? Color.FromArgb(46, 50, 58) : Color.FromArgb(230, 230, 230);
+            Color thumbBg = isDarkMode ? Color.FromArgb(120, 125, 135) : Color.FromArgb(160, 160, 160);
 
             this.BackColor = formBg;
 
@@ -74,12 +74,9 @@ namespace Vault2Door
                 if (bannerText != null) bannerText.ForeColor = Color.White;
             }
 
-            // Chart transparency + axes theme
-            if (chart != null)
-            {
-                chart.BackColor = Color.Transparent;
-                ApplyChartAxesTheme();
-            }
+            // Custom scrollbar colors
+            if (assetScrollTrack != null) assetScrollTrack.BackColor = trackBg;
+            if (assetScrollThumb != null) assetScrollThumb.BackColor = thumbBg;
 
             if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
 

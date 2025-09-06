@@ -49,7 +49,7 @@ namespace Vault2Door
                 Size = new Size(this.ClientSize.Width - 200, this.ClientSize.Height),
                 BackColor = Color.White,
                 Padding = new Padding(20),
-                AutoScroll = true,
+                AutoScroll = false,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
             this.Controls.Add(mainPanel);
@@ -175,36 +175,6 @@ namespace Vault2Door
             };
             mainPanel.Controls.Add(versionBadge);
 
-            // ===== Summary cards =====
-            string[] metrics =
-            {
-                "Total Portfolio:$24,750.00\n+1,250.50 (+5.3%)",
-                "Cash Balance:$8,420.00\n-180.00 (-2.1%)",
-                "Holdings Value:$16,330.00\n+1,430.50 (+9.6%)",
-                "Today's P&L:+342.80 (+1.4%)"
-            };
-
-            int xOffset = 0;
-            foreach (string metric in metrics)
-            {
-                Panel card = new Panel
-                {
-                    BackColor = Color.White,
-                    BorderStyle = BorderStyle.FixedSingle,
-                    Size = new Size(260, 90),
-                    Location = new Point(xOffset, 196)
-                };
-                var l = new Label
-                {
-                    Text = metric,
-                    Location = new Point(10, 10),
-                    Size = new Size(240, 70)
-                };
-                card.Controls.Add(l);
-                mainPanel.Controls.Add(card);
-                xOffset += 280;
-            }
-
             // ===== Assets title =====
             var assetsTitle = new Label
             {
@@ -225,22 +195,63 @@ namespace Vault2Door
             };
             mainPanel.Controls.Add(contentRow);
 
-            // Left (assets) with scroll
+            // Left (assets) viewport (custom dark scrollbar)
             assetListPanel = new Panel
             {
                 Location = new Point(0, 0),
                 Size = new Size(320, contentRow.Height),
                 BackColor = Color.White,
-                AutoScroll = true,
+                AutoScroll = false,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom
             };
             contentRow.Controls.Add(assetListPanel);
 
+            assetContent = new Panel
+            {
+                Location = new Point(0, 0),
+                Size = new Size(assetListPanel.Width - 14, assetListPanel.Height),
+                BackColor = Color.White
+            };
+            assetListPanel.Controls.Add(assetContent);
+
+            assetScrollTrack = new Panel
+            {
+                Width = 12,
+                Dock = DockStyle.Right,
+                BackColor = Color.FromArgb(230, 230, 230)
+            };
+            assetListPanel.Controls.Add(assetScrollTrack);
+
+            assetScrollThumb = new Panel
+            {
+                Width = 10,
+                Height = 80,
+                Left = 1,
+                Top = 0,
+                BackColor = Color.FromArgb(160, 160, 160),
+                Cursor = Cursors.Hand
+            };
+            assetScrollTrack.Controls.Add(assetScrollThumb);
+
+            // Mouse events for custom scrolling
+            assetListPanel.MouseWheel += AssetViewport_MouseWheel;
+            assetScrollTrack.MouseDown += (s, e) => ScrollTrackClick(e.Y);
+            assetScrollThumb.MouseDown += (s, e) => { assetThumbDragging = true; assetThumbDragStartY = e.Y; assetThumbStartTop = assetScrollThumb.Top; };
+            assetScrollThumb.MouseUp += (s, e) => assetThumbDragging = false;
+            assetScrollThumb.MouseMove += (s, e) =>
+            {
+                if (!assetThumbDragging) return;
+                int dy = e.Y - assetThumbDragStartY;
+                int newTop = assetThumbStartTop + dy;
+                MoveThumbTo(newTop);
+            };
+
             // Right (graph) - fills space
+            var graphLeft = assetListPanel.Right + 12;
             graphPanel = new Panel
             {
-                Location = new Point(assetListPanel.Right + 12, 0),
-                Size = new Size(contentRow.Width - assetListPanel.Width - 12, contentRow.Height),
+                Location = new Point(graphLeft, 0),
+                Size = new Size(contentRow.Width - (assetListPanel.Width + 12), contentRow.Height),
                 BackColor = Color.Transparent,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
@@ -253,7 +264,6 @@ namespace Vault2Door
                 LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden
             };
 
-            // initial axes (will be re-themed in ApplyTheme)
             chart.XAxes = new[] { new Axis() };
             chart.YAxes = new[] { new Axis() };
 
@@ -262,17 +272,20 @@ namespace Vault2Door
 
             // Asset cards (clickable to switch chart preset)
             int y = 0;
-            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond");
-            CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 140, "gold");
-            CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 140, "silver");
-            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 140, "bronze");
+            CreateAssetCard(assetContent, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond");
+            CreateAssetCard(assetContent, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 140, "gold");
+            CreateAssetCard(assetContent, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 140, "silver");
+            CreateAssetCard(assetContent, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 140, "bronze");
+
+            assetContent.Height = y + 150;
+            UpdateAssetScrollMetrics();
         }
 
         private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, string key)
         {
             var card = new Panel
             {
-                BorderStyle = BorderStyle.FixedSingle,
+                BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle,
                 Size = new Size(290, 130),
                 Location = new Point(x, y),
                 Cursor = Cursors.Hand

@@ -13,7 +13,7 @@ namespace Vault2Door
         private const string AppName = "Vault2Door – PreciousMetals";
         private const string AppVersion = "2.0 (Stable)";
 
-        // ===== Paths & state (path retained for backwards-compat; no longer used for charts) =====
+        // ===== Paths & state =====
         private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
         private bool isDarkMode = true; // start in dark
 
@@ -34,7 +34,14 @@ namespace Vault2Door
 
         // Helps layout the graph
         private Panel contentRow = null!;
-        private Panel assetListPanel = null!;
-        private Panel graphPanel = null!;
+        private Panel assetListPanel = null!;   // viewport
+        private Panel assetContent = null!;     // scrollable content
+        private Panel assetScrollTrack = null!; // custom scrollbar track
+        private Panel assetScrollThumb = null!; // custom scrollbar thumb
+        private Panel graphPanel = null!;       // graph host panel
+        private int assetScrollOffset = 0;
+        private bool assetThumbDragging = false;
+        private int assetThumbDragStartY = 0;
+        private int assetThumbStartTop = 0;
     }
 }

@@ -19,6 +19,7 @@
     <Compile Update="Form1.UI.Build.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.UI.Chart.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.Theme.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.Scroll.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
   </ItemGroup>
 </Project>

@@ -1,10 +1,9 @@
 using System;
-using System.Linq;
+using System.Drawing;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using SkiaSharp;
 using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.Measure;
 
 namespace Vault2Door
 {
@@ -40,9 +39,11 @@ namespace Vault2Door
                 var line = new LineSeries<double>
                 {
                     Values = values,
-                    GeometrySize = 0,
+                    GeometrySize = 8,
+                    GeometryStroke = new SolidColorPaint(SKColors.White) { StrokeThickness = 2 },
+                    GeometryFill = new SolidColorPaint(new SKColor(255, 255, 255, 120)),
                     LineSmoothness = 0.7,
-                    Stroke = new SolidColorPaint(new SKColor(218, 165, 32)) { StrokeThickness = 3 },
+                    Stroke = new SolidColorPaint(new SKColor(120, 180, 255)) { StrokeThickness = 3 },
                     Fill = new LinearGradientPaint(
                         new[] {
                             new SKColor(255, 215, 0, 80),
@@ -55,14 +56,14 @@ namespace Vault2Door
             }
             else if (key.Contains("diamond"))
             {
-                // DIAMOND: crisp line + diamond markers (sparkle vibe)
+                // DIAMOND: crisp line + sparkle markers
                 var values = RandSeries(n, 8, 1.0);
                 var line = new LineSeries<double>
                 {
                     Values = values,
                     GeometrySize = 10,
                     GeometryStroke = new SolidColorPaint(SKColors.White) { StrokeThickness = 2 },
-                    GeometryFill = new SolidColorPaint(new SKColor(135, 206, 250, 180)),
+                    GeometryFill = new SolidColorPaint(new SKColor(160, 230, 255, 200)),
                     LineSmoothness = 0.5,
                     Stroke = new SolidColorPaint(new SKColor(135, 206, 250)) { StrokeThickness = 2.4f }
                 };
@@ -75,7 +76,9 @@ namespace Vault2Door
                 var line = new LineSeries<double>
                 {
                     Values = values,
-                    GeometrySize = 0,
+                    GeometrySize = 6,
+                    GeometryStroke = new SolidColorPaint(SKColors.White) { StrokeThickness = 1.8f },
+                    GeometryFill = new SolidColorPaint(new SKColor(230, 230, 240, 180)),
                     LineSmoothness = 0.9,
                     Stroke = new SolidColorPaint(new SKColor(192, 192, 192)) { StrokeThickness = 2.6f },
                     Fill = null
@@ -89,7 +92,7 @@ namespace Vault2Door
                 var cols = new ColumnSeries<double>
                 {
                     Values = values,
-                    MaxBarWidth = double.NaN, // responsive width
+                    MaxBarWidth = double.NaN,
                     Fill = new SolidColorPaint(new SKColor(205, 127, 50, 170)),
                     Stroke = new SolidColorPaint(new SKColor(139, 69, 19)) { StrokeThickness = 1.5f }
                 };
@@ -97,18 +100,21 @@ namespace Vault2Door
             }
             else
             {
-                // fallback
                 var values = RandSeries(n, 10, 0.7);
                 chart.Series = new ISeries[] { new LineSeries<double> { Values = values, GeometrySize = 0 } };
             }
 
-            // Apply theme to axes each time
             ApplyChartAxesTheme();
         }
 
         private void ApplyChartAxesTheme()
         {
-            var labels = isDarkMode ? SKColors.Gainsboro : SKColors.DimGray;
+            // Control background (WinForms)
+            var bg = isDarkMode ? Color.FromArgb(36, 40, 48) : Color.FromArgb(248, 248, 248);
+            chart.BackColor = bg;
+
+            // Axis/grid paints
+            var labels = isDarkMode ? SKColors.Gainsboro : new SKColor(60, 60, 60);
             var grid = isDarkMode ? new SKColor(255, 255, 255, 30) : new SKColor(0, 0, 0, 30);
 
             chart.XAxes = new[]
@@ -118,7 +124,7 @@ namespace Vault2Door
                     LabelsPaint = new SolidColorPaint(labels),
                     SeparatorsPaint = new SolidColorPaint(grid) { StrokeThickness = 1 },
                     TicksPaint = new SolidColorPaint(grid) { StrokeThickness = 1 },
-                    TextSize = 12
+                    TextSize = 12,
                 }
             };
             chart.YAxes = new[]
@@ -128,7 +134,7 @@ namespace Vault2Door
                     LabelsPaint = new SolidColorPaint(labels),
                     SeparatorsPaint = new SolidColorPaint(grid) { StrokeThickness = 1 },
                     TicksPaint = new SolidColorPaint(grid) { StrokeThickness = 1 },
-                    TextSize = 12
+                    TextSize = 12,
                 }
             };
         }
