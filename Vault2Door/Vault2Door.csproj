@@ -14,13 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Form1.Fields.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.Constructor.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.UI.Build.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.Layout.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.UI.Chart.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.Theme.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.Scroll.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Fields.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Constructor.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.UI.Build.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.UI.Chart.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Theme.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Scroll.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Layout.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Realtime.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
   </ItemGroup>
 </Project>

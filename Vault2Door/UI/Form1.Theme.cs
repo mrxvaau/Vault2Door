@@ -56,25 +56,32 @@ namespace Vault2Door
                     b.FlatAppearance.BorderColor = borderColor;
                     b.UseVisualStyleBackColor = false;
                 }
+                if (c is CheckBox cb)
+                {
+                    cb.ForeColor = textColor;
+                    cb.BackColor = panelBg;
+                    cb.FlatStyle = FlatStyle.Standard;
+                    cb.UseVisualStyleBackColor = false;
+                }
                 foreach (Control child in c.Controls) Recurse(child);
             }
             if (mainPanel != null) Recurse(mainPanel);
 
             if (topHeader != null) topHeader.BackColor = panelBg;
-            if (marketStatus != null) marketStatus.ForeColor = isDarkMode ? Color.LightGreen : Color.Green;
+            if (marketStatus != null) marketStatus.ForeColor = isDarkMode ? System.Drawing.Color.LightGreen : System.Drawing.Color.Green;
             if (balanceLabel != null) balanceLabel.ForeColor = textColor;
 
             if (banner != null)
             {
-                banner.BackColor = isDarkMode ? Color.FromArgb(40, 44, 52) : Color.FromArgb(29, 39, 55);
-                if (bannerText != null) bannerText.ForeColor = Color.White;
+                banner.BackColor = isDarkMode ? System.Drawing.Color.FromArgb(40, 44, 52) : System.Drawing.Color.FromArgb(29, 39, 55);
+                if (bannerText != null) bannerText.ForeColor = System.Drawing.Color.White;
             }
 
             if (assetScrollTrack != null) assetScrollTrack.BackColor = trackBg;
             if (assetScrollThumb != null) assetScrollThumb.BackColor = thumbBg;
 
             if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
-            if (versionBadge != null) versionBadge.ForeColor = isDarkMode ? Color.Gray : Color.DimGray;
+            if (versionBadge != null) versionBadge.ForeColor = isDarkMode ? System.Drawing.Color.Gray : System.Drawing.Color.DimGray;
         }
     }
 }

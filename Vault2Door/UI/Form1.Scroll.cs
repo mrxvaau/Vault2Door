@@ -10,7 +10,6 @@ namespace Vault2Door
             int delta = -Math.Sign(e.Delta) * 60;
             ScrollAssetsBy(delta);
         }
-
         private void ScrollTrackClick(int clickY)
         {
             int page = assetListPanel.Height - 40;
@@ -18,48 +17,34 @@ namespace Vault2Door
             if (clickY < thumbTop) ScrollAssetsBy(-page);
             else if (clickY > thumbTop + assetScrollThumb.Height) ScrollAssetsBy(page);
         }
-
         private void MoveThumbTo(int newTop)
         {
             int minTop = 0;
             int maxTop = Math.Max(0, assetScrollTrack.Height - assetScrollThumb.Height);
             int clamped = Math.Max(minTop, Math.Min(maxTop, newTop));
             assetScrollThumb.Top = clamped;
-
             int contentRange = Math.Max(0, assetContent.Height - assetListPanel.Height);
             if (contentRange <= 0) { assetScrollOffset = 0; assetContent.Top = 0; return; }
-
             float frac = (float)clamped / Math.Max(1, maxTop);
             assetScrollOffset = (int)(frac * contentRange);
             assetContent.Top = -assetScrollOffset;
         }
-
         private void ScrollAssetsBy(int dy)
         {
             int contentRange = Math.Max(0, assetContent.Height - assetListPanel.Height);
             int newOffset = Math.Max(0, Math.Min(contentRange, assetScrollOffset + dy));
             assetScrollOffset = newOffset;
-
             assetContent.Top = -assetScrollOffset;
-
             int maxTop = Math.Max(0, assetScrollTrack.Height - assetScrollThumb.Height);
             float frac = contentRange == 0 ? 0 : (float)newOffset / contentRange;
             assetScrollThumb.Top = (int)(frac * maxTop);
         }
-
         private void UpdateAssetScrollMetrics()
         {
             if (assetListPanel == null || assetScrollTrack == null || assetScrollThumb == null || assetContent == null) return;
-
             assetContent.Width = assetListPanel.Width - assetScrollTrack.Width;
-
             int contentRange = Math.Max(0, assetContent.Height - assetListPanel.Height);
-            if (contentRange <= 0)
-            {
-                assetScrollThumb.Visible = false;
-                assetScrollOffset = 0;
-                assetContent.Top = 0;
-            }
+            if (contentRange <= 0) { assetScrollThumb.Visible = false; assetScrollOffset = 0; assetContent.Top = 0; }
             else
             {
                 assetScrollThumb.Visible = true;

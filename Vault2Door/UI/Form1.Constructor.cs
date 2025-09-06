@@ -11,7 +11,6 @@ namespace Vault2Door
         {
             InitializeComponent();
             this.Text = $"{AppName} v{AppVersion}";
-
             this.Size = new Size(1280, 800);
             this.MinimumSize = new Size(1100, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -22,18 +21,13 @@ namespace Vault2Door
             this.KeyPreview = true;
             this.KeyDown += (s, e) =>
             {
-                if (e.Control && e.KeyCode == Keys.D)
-                {
-                    ToggleTheme();
-                    e.Handled = true;
-                }
+                if (e.Control && e.KeyCode == Keys.D) { ToggleTheme(); e.Handled = true; }
             };
 
             if (!Directory.Exists(gifPathRoot))
             {
                 var localGif = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gif");
-                if (Directory.Exists(localGif))
-                    gifPathRoot = localGif + Path.DirectorySeparatorChar;
+                if (Directory.Exists(localGif)) gifPathRoot = localGif + Path.DirectorySeparatorChar;
             }
 
             BuildDashboardUI();
@@ -41,7 +35,9 @@ namespace Vault2Door
             ShowChart("gold");
 
             this.Resize += (s, e) => { UpdateAssetScrollMetrics(); AlignVerticalLayout(); };
-            mainPanel.Resize += (s, e) => AlignVerticalLayout();
+
+            realTimer.Interval = AppConfig.PollIntervalMs;  // 60s default
+            realTimer.Tick += async (s, e) => await LoadRealtimeAsync();
         }
 
         private void Form1_Load(object? sender, EventArgs e) { }

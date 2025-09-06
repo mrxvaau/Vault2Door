@@ -4,16 +4,19 @@ using System.Windows.Forms;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.WinForms;
+using Vault2Door.Models;
+using Vault2Door.Services;
 
 namespace Vault2Door
 {
     public partial class Form1 : Form
     {
-        private const string AppName = "Vault2Door – PreciousMetals";
-        private const string AppVersion = "2.5 (Stable)";
+        private const string AppName = "Vault2Door";
+        private const string AppVersion = "2.6 (Stable)";
 
         private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
         private bool isDarkMode = true;
+        private bool realtimeEnabled = false;
 
         private Panel sidebar = null!;
         private Panel mainPanel = null!;
@@ -27,6 +30,8 @@ namespace Vault2Door
         private Button btnTheme = null!;
         private Button btnBell = null!;
         private Button btnUser = null!;
+        private CheckBox chkRealtime = null!;
+        private Label providerBadge = null!;
         private Label versionBadge = null!;
         private ToolTip tip = new ToolTip();
 
@@ -42,5 +47,9 @@ namespace Vault2Door
         private bool assetThumbDragging = false;
         private int assetThumbDragStartY = 0;
         private int assetThumbStartTop = 0;
+
+        private readonly RealtimeService realtime = new RealtimeService();
+        private readonly System.Windows.Forms.Timer realTimer = new System.Windows.Forms.Timer();
+        private AssetKind currentAsset = AssetKind.Gold;
     }
 }
