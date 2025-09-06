@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -17,6 +17,7 @@
     <Compile Update="Form1.Fields.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.Constructor.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.UI.Build.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="Form1.Layout.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.UI.Chart.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.Theme.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
     <Compile Update="Form1.Scroll.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>

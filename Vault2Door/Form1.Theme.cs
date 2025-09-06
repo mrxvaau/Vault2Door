@@ -9,12 +9,11 @@ namespace Vault2Door
         {
             isDarkMode = !isDarkMode;
             ApplyTheme();
-            ApplyChartAxesTheme(); // ensure chart paints flip
+            ApplyChartAxesTheme();
         }
 
         private void ApplyTheme()
         {
-            // Colors tuned for contrast
             Color formBg = isDarkMode ? Color.FromArgb(18, 20, 23) : Color.FromArgb(240, 242, 245);
             Color panelBg = isDarkMode ? Color.FromArgb(24, 27, 32) : Color.White;
             Color sidebarBg = isDarkMode ? Color.FromArgb(28, 31, 37) : Color.FromArgb(245, 247, 250);
@@ -26,7 +25,6 @@ namespace Vault2Door
 
             this.BackColor = formBg;
 
-            // Sidebar theme (buttons + bg + borders)
             if (sidebar != null)
             {
                 sidebar.BackColor = sidebarBg;
@@ -44,10 +42,9 @@ namespace Vault2Door
                 }
             }
 
-            // Main area panels/labels/buttons (exclude banner)
             void Recurse(Control c)
             {
-                if (c == banner) return; // handle banner separately
+                if (c == banner) return;
                 if (c is Panel p) p.BackColor = panelBg;
                 if (c is Label lb) lb.ForeColor = textColor;
                 if (c is Button b)
@@ -63,7 +60,6 @@ namespace Vault2Door
             }
             if (mainPanel != null) Recurse(mainPanel);
 
-            // Header + banner
             if (topHeader != null) topHeader.BackColor = panelBg;
             if (marketStatus != null) marketStatus.ForeColor = isDarkMode ? Color.LightGreen : Color.Green;
             if (balanceLabel != null) balanceLabel.ForeColor = textColor;
@@ -74,15 +70,11 @@ namespace Vault2Door
                 if (bannerText != null) bannerText.ForeColor = Color.White;
             }
 
-            // Custom scrollbar colors
             if (assetScrollTrack != null) assetScrollTrack.BackColor = trackBg;
             if (assetScrollThumb != null) assetScrollThumb.BackColor = thumbBg;
 
             if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
-
-            // Version badge stays subtle
-            if (versionBadge != null)
-                versionBadge.ForeColor = isDarkMode ? Color.Gray : Color.DimGray;
+            if (versionBadge != null) versionBadge.ForeColor = isDarkMode ? Color.Gray : Color.DimGray;
         }
     }
 }

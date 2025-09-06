@@ -12,7 +12,6 @@ namespace Vault2Door
             InitializeComponent();
             this.Text = $"{AppName} v{AppVersion}";
 
-            // Regular app behavior: resizable, min & max buttons
             this.Size = new Size(1280, 800);
             this.MinimumSize = new Size(1100, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -20,7 +19,6 @@ namespace Vault2Door
             this.MaximizeBox = true;
             this.MinimizeBox = true;
 
-            // Keyboard theme toggle (Ctrl + D)
             this.KeyPreview = true;
             this.KeyDown += (s, e) =>
             {
@@ -31,25 +29,21 @@ namespace Vault2Door
                 }
             };
 
-            // Path fallback (compat; not used by charts anymore)
             if (!Directory.Exists(gifPathRoot))
             {
                 var localGif = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gif");
                 if (Directory.Exists(localGif))
-                    gifPathRoot = localGif + System.IO.Path.DirectorySeparatorChar;
+                    gifPathRoot = localGif + Path.DirectorySeparatorChar;
             }
 
             BuildDashboardUI();
-            ApplyTheme(); // start in chosen theme
-
-            // default chart preset
+            ApplyTheme();
             ShowChart("gold");
 
-            // keep scrollbar metrics fresh on resize
-            this.Resize += (s, e) => UpdateAssetScrollMetrics();
+            this.Resize += (s, e) => { UpdateAssetScrollMetrics(); AlignVerticalLayout(); };
+            mainPanel.Resize += (s, e) => AlignVerticalLayout();
         }
 
-        // Designer wires this; keep it to avoid CS0103
         private void Form1_Load(object? sender, EventArgs e) { }
     }
 }

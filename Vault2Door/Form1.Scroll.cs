@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Vault2Door
@@ -8,13 +7,12 @@ namespace Vault2Door
     {
         private void AssetViewport_MouseWheel(object? sender, MouseEventArgs e)
         {
-            int delta = -Math.Sign(e.Delta) * 60; // scroll speed
+            int delta = -Math.Sign(e.Delta) * 60;
             ScrollAssetsBy(delta);
         }
 
         private void ScrollTrackClick(int clickY)
         {
-            // page up/down
             int page = assetListPanel.Height - 40;
             int thumbTop = assetScrollThumb.Top;
             if (clickY < thumbTop) ScrollAssetsBy(-page);
@@ -44,7 +42,6 @@ namespace Vault2Door
 
             assetContent.Top = -assetScrollOffset;
 
-            // sync thumb
             int maxTop = Math.Max(0, assetScrollTrack.Height - assetScrollThumb.Height);
             float frac = contentRange == 0 ? 0 : (float)newOffset / contentRange;
             assetScrollThumb.Top = (int)(frac * maxTop);
@@ -54,7 +51,6 @@ namespace Vault2Door
         {
             if (assetListPanel == null || assetScrollTrack == null || assetScrollThumb == null || assetContent == null) return;
 
-            // ensure content width
             assetContent.Width = assetListPanel.Width - assetScrollTrack.Width;
 
             int contentRange = Math.Max(0, assetContent.Height - assetListPanel.Height);
@@ -67,12 +63,11 @@ namespace Vault2Door
             else
             {
                 assetScrollThumb.Visible = true;
-                // thumb size proportional
                 float ratio = (float)assetListPanel.Height / assetContent.Height;
                 int thumbMin = 24;
                 int thumbSize = Math.Max(thumbMin, (int)(assetScrollTrack.Height * ratio));
                 assetScrollThumb.Height = Math.Min(thumbSize, assetScrollTrack.Height - 4);
-                ScrollAssetsBy(0); // re-sync position
+                ScrollAssetsBy(0);
             }
         }
     }
