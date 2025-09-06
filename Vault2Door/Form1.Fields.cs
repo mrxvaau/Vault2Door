@@ -1,7 +1,9 @@
-using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.WinForms;
 
 namespace Vault2Door
 {
@@ -11,10 +13,9 @@ namespace Vault2Door
         private const string AppName = "Vault2Door – PreciousMetals";
         private const string AppVersion = "2.0 (Stable)";
 
-        // ===== Paths & state =====
-        // Prefer your absolute path; fallback to local ./gif/ folder beside the EXE
+        // ===== Paths & state (path retained for backwards-compat; no longer used for charts) =====
         private string gifPathRoot = @"C:\Users\Qlurut\source\repos\PreciousMetalsTradingApp\PreciousMetalsTradingApp\gif\";
-        private bool isDarkMode = true; // stable 2.0 starts in dark (as per your last screenshot)
+        private bool isDarkMode = true; // start in dark
 
         // ===== UI references =====
         private Panel sidebar = null!;
@@ -24,7 +25,7 @@ namespace Vault2Door
         private Label bannerText = null!;
         private Label marketStatus = null!;
         private Label balanceLabel = null!;
-        private PictureBox chartBox = null!;
+        private CartesianChart chart = null!; // LiveCharts chart
         private Button btnTheme = null!;
         private Button btnBell = null!;
         private Button btnUser = null!;

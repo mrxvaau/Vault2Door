@@ -1,7 +1,8 @@
-using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+using SkiaSharp;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore;
 
 namespace Vault2Door
 {
@@ -73,7 +74,13 @@ namespace Vault2Door
                 if (bannerText != null) bannerText.ForeColor = Color.White;
             }
 
-            if (chartBox != null) chartBox.BackColor = isDarkMode ? Color.Black : Color.LightGray;
+            // Chart transparency + axes theme
+            if (chart != null)
+            {
+                chart.BackColor = Color.Transparent;
+                ApplyChartAxesTheme();
+            }
+
             if (btnTheme != null) btnTheme.Text = isDarkMode ? "☀️" : "🌙";
 
             // Version badge stays subtle

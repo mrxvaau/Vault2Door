@@ -11,10 +11,14 @@ namespace Vault2Door
         {
             InitializeComponent();
             this.Text = $"{AppName} v{AppVersion}";
-            this.Size = new Size(1500, 800);
+
+            // Regular app behavior: resizable, min & max buttons
+            this.Size = new Size(1280, 800);
+            this.MinimumSize = new Size(1100, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
 
             // Keyboard theme toggle (Ctrl + D)
             this.KeyPreview = true;
@@ -27,7 +31,7 @@ namespace Vault2Door
                 }
             };
 
-            // Path fallback if absolute path doesn't exist
+            // Path fallback (kept for compatibility; not used by charts anymore)
             if (!Directory.Exists(gifPathRoot))
             {
                 var localGif = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gif");
@@ -37,6 +41,9 @@ namespace Vault2Door
 
             BuildDashboardUI();
             ApplyTheme(); // start in chosen theme
+
+            // default chart preset
+            ShowChart("gold");
         }
 
         // Designer wires this; keep it to avoid CS0103

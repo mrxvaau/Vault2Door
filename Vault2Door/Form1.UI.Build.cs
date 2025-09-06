@@ -1,7 +1,10 @@
 using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
+using LiveChartsCore.SkiaSharpView.WinForms;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
+using SkiaSharp;
 
 namespace Vault2Door
 {
@@ -84,7 +87,7 @@ namespace Vault2Door
             var rightBar = new FlowLayoutPanel
             {
                 Dock = DockStyle.Right,
-                Width = 200,
+                Width = 220,
                 FlowDirection = FlowDirection.RightToLeft,
                 WrapContents = false,
                 Padding = new Padding(0, 10, 12, 0),
@@ -216,9 +219,9 @@ namespace Vault2Door
             contentRow = new Panel
             {
                 Location = new Point(0, 334),
-                Size = new Size(mainPanel.Width - 40, 560),
+                Size = new Size(mainPanel.Width - 40, mainPanel.Height - 364),
                 BackColor = Color.White,
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
             mainPanel.Controls.Add(contentRow);
 
@@ -238,33 +241,34 @@ namespace Vault2Door
             {
                 Location = new Point(assetListPanel.Right + 12, 0),
                 Size = new Size(contentRow.Width - assetListPanel.Width - 12, contentRow.Height),
-                BackColor = Color.LightGray,
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+                BackColor = Color.Transparent,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
             contentRow.Controls.Add(graphPanel);
 
-            chartBox = new PictureBox
+            chart = new CartesianChart
             {
                 Dock = DockStyle.Fill,
-                SizeMode = PictureBoxSizeMode.StretchImage,
-                BackColor = Color.LightGray,
-                Margin = new Padding(0)
+                BackColor = Color.Transparent,
+                LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden
             };
+
+            // initial axes (will be re-themed in ApplyTheme)
+            chart.XAxes = new[] { new Axis() };
+            chart.YAxes = new[] { new Axis() };
+
             graphPanel.Padding = new Padding(10);
-            graphPanel.Controls.Add(chartBox);
+            graphPanel.Controls.Add(chart);
 
-            // Asset cards (clickable to switch GIF)
+            // Asset cards (clickable to switch chart preset)
             int y = 0;
-            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond.gif");
-            CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 140, "gold.gif");
-            CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 140, "silver.gif");
-            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 140, "bronze.gif");
-
-            // Default chart
-            ShowChart("gold.gif");
+            CreateAssetCard(assetListPanel, "DIAMOND", "$4,500.00", "+$55.20", Color.LightGreen, 10, y += 10, "diamond");
+            CreateAssetCard(assetListPanel, "GOLD (24K)", "$2,048.50", "+$12.80", Color.LightGreen, 10, y += 140, "gold");
+            CreateAssetCard(assetListPanel, "SILVER (999)", "$24.85", "-$0.15", Color.LightCoral, 10, y += 140, "silver");
+            CreateAssetCard(assetListPanel, "BRONZE", "$15.10", "+$0.50", Color.LightGreen, 10, y += 140, "bronze");
         }
 
-        private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, string gifFile)
+        private void CreateAssetCard(Panel parent, string name, string price, string change, Color changeColor, int x, int y, string key)
         {
             var card = new Panel
             {
@@ -283,7 +287,7 @@ namespace Vault2Door
             var sell = new Button { Text = "Sell", Location = new Point(110, 92), Width = 90, Height = 28, FlatStyle = FlatStyle.Flat };
             sell.FlatAppearance.BorderSize = 1;
 
-            void clickHandler(object s, EventArgs e) => ShowChart(gifFile);
+            void clickHandler(object s, EventArgs e) => ShowChart(key);
             card.Click += clickHandler; l1.Click += clickHandler; l2.Click += clickHandler; l3.Click += clickHandler;
             buy.Click += clickHandler; sell.Click += clickHandler;
 
