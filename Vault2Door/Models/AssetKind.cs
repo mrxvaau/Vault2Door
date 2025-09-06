@@ -1,4 +1,1 @@
-namespace Vault2Door.Models
-{
-    public enum AssetKind { Gold, Silver, Bronze, Diamond }
-}
+namespace Vault2Door.Models{ public enum AssetKind{ Gold,Silver,Bronze,Diamond } }

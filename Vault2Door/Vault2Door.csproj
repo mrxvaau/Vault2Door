@@ -5,8 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>Vault2Door</AssemblyName>
-    <RootNamespace>Vault2Door</RootNamespace>
+    <!-- IMPORTANT: we keep default SDK globs ON and never explicitly Include .cs files -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,14 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="UI\Form1.Fields.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.Constructor.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.UI.Build.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.UI.Chart.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.Theme.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.Scroll.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.Layout.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
-    <Compile Update="UI\Form1.Realtime.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <!-- Only attach designer metadata via Update -->
+    <Compile Update="Settings\SettingsForm.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="Settings\SettingsForm.Designer.cs"><DependentUpon>SettingsForm.cs</DependentUpon></Compile>
+    <Compile Update="UI\Form1.cs"><SubType>Form</SubType></Compile>
     <Compile Update="UI\Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
   </ItemGroup>
 </Project>

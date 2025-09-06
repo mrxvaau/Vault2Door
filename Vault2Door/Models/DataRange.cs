@@ -1,0 +1,1 @@
+namespace Vault2Door.Models{ public enum DataRange{ OneDay,FiveDays,OneMonth } }

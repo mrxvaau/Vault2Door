@@ -1,0 +1,5 @@
+using System;using System.IO;using System.Linq;using System.Text;using System.Windows.Forms;using LiveChartsCore;using LiveChartsCore.Kernel;
+namespace Vault2Door{ public partial class Form1{
+private void ExportChartPng(){ using var sfd=new SaveFileDialog{ Filter="PNG Image|*.png", FileName=$"{currentAsset}_{DateTime.Now:yyyyMMdd_HHmm}.png"}; if(sfd.ShowDialog(this)!=DialogResult.OK) return; using var bmp=new System.Drawing.Bitmap(chart.Width,chart.Height); chart.DrawToBitmap(bmp, new System.Drawing.Rectangle(0,0,chart.Width,chart.Height)); bmp.Save(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png); }
+private void ExportChartCsv(){ using var sfd=new SaveFileDialog{ Filter="CSV|*.csv", FileName=$"{currentAsset}_{DateTime.Now:yyyyMMdd_HHmm}.csv"}; if(sfd.ShowDialog(this)!=DialogResult.OK) return; var sb=new StringBuilder(); sb.AppendLine("index,value"); int idx=0; foreach(var s in chart.Series){ if(s is ISeries series && series.Values is System.Collections.IEnumerable en){ foreach(var v in en){ if(v is double d) sb.AppendLine($"{idx++},{d}"); } } } File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8); }
+} }

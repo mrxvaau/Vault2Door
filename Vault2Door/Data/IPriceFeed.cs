@@ -1,12 +1,1 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Vault2Door.Models;
-
-namespace Vault2Door.Data
-{
-    public interface IPriceFeed
-    {
-        Task<SeriesResult> GetSeriesAsync(string symbol, CancellationToken ct);
-    }
-}
+using System.Threading;using System.Threading.Tasks;using Vault2Door.Models; namespace Vault2Door.Data{ public interface IPriceFeed{ Task<SeriesResult> GetSeriesAsync(string symbol,CancellationToken ct); } }
